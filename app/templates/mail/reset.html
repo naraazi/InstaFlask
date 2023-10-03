@@ -1,0 +1,13 @@
+{%extends 'layout.html'%}
+
+{%block body%}
+<div class="box">
+    <h1 class="title has-text-centered">Password Reset Request</h1>
+    <p class="subtitle has-text-centered">
+        Hi! We have received a request to reset your InstaFlask password!
+        If you haven't issued this request, ignore this email.
+    </p>
+    <h5 class="my-5">Click on this button to reset your password.</h5>
+    <a class="button my3 is-info" href="{{url_for('user.reset_request', token=token, _external=True)}}">Reset Password</a>
+</div>
+{%endblock body%}
