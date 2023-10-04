@@ -1,7 +1,7 @@
 from app.extensions import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from itsdangerous import URLSafeTimedSerializer as Serializer
+from itsdangerous import TimedSerializer as Serializer
 from flask import current_app
 
 
@@ -23,19 +23,15 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-    # --------------------------------------------------------------------------------------------------------------- #
-    # -- ERROR HERE (extends -> /user/model.py: line 40)
-    def get_reset_token(self, expires_sec=600):
-        s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
-        return s.dumps({'user_id': self.id}).decode("utf-8")
-
-    # --------------------------------------------------------------------------------------------------------------- #
+    def get_reset_token(self):
+        s = Serializer(current_app.secret_key, 'confirmation')
+        return s.dumps({'user_id': self.id})
 
     @staticmethod
-    def verify_reset_token(token):
-        s = Serializer(current_app.config['SECRET_KEY'])
+    def verify_reset_token(self, token, max_age=600):
+        s = Serializer(current_app.secret_key, 'confirmation')
         try:
-            user_id = s.load(token)['user_id']
+            user_id = s.load(token, max_age=max_age) == self.id
         except:
             return None
         return User.query.get(user_id)

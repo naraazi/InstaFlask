@@ -1,5 +1,3 @@
-from jinja2.nodes import Sub
-
 from app.user.models import User
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, EmailField, SubmitField
@@ -45,11 +43,8 @@ class ResetForm(FlaskForm):
             raise ValidationError('We could not find any account with this e-mail')
 
 
-# ------------------------------------------------------------------------------------------------------------------- #
-# -- ERROR HERE (extends -> /user/model.py: line 40)
 class PasswordResetForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired(), EqualTo('Confirm',
                                                                              message='The passwords must match')])
     confirm = PasswordField('Repeat Password')
     submit = SubmitField('Change Password')
-# ------------------------------------------------------------------------------------------------------------------- #

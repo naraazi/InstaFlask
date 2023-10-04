@@ -40,8 +40,6 @@ def logout():
     return redirect(url_for('user.login'))
 
 
-# ------------------------------------------------------------------------------------------------------------------- #
-# -- ERROR HERE (ABOUT THE expires_sec) IN LINE 46
 @user.route('/reset', methods=['get', 'post'])
 def reset():
     if current_user.is_authenticated:
@@ -74,4 +72,3 @@ def reset_request(token):
         return render_template('password_reset.html', form=form)
     else:
         return redirect(url_for('user.reset'))
-# ------------------------------------------------------------------------------------------------------------------- #
