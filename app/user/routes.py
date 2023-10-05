@@ -4,7 +4,7 @@ from app.user.models import User
 from app.user.forms import SignupForm, LoginForm, ResetForm, PasswordResetForm
 from app.helper.mail import send_email
 from flask import render_template, redirect, url_for
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 
 
 @user.route('/signup', methods=['get', 'post'])
@@ -40,6 +40,33 @@ def logout():
     return redirect(url_for('user.login'))
 
 
+@user.route('/confirm')
+@login_required
+def confirm():
+    if current_user.is_confirmed:
+        return 'You are already confirmed'
+    token = current_user.get_serializer_token()
+    # token = current_user.get_serializer_token(salt='Mail Confirmation') -- has no 'salt'
+    # -- EMAIL SENDER HERE!!
+    send_email(subject='E-mail Confirmation', to=current_user.email,
+               text_body='If your are getting this, it means you are unable to see HTML page. Please contact Admin.',
+               template='confirm', token=token)
+    return '<h1>An confirmation mail has been sent to your e-mail. Check your Inbox.</h1>'
+
+
+@user.route('/confirm/<token>')
+@login_required
+def confirmation(token):
+    if current_user.is_confirmed:
+        return 'You are already confirmed'
+    user = User.verify_serializer_token(token, salt='Mail Confirmation')
+    if user:
+        user.is_confirmed = True
+        db.session.commit()
+        return 'User Confirmed'
+    return "<h1>There has been some issue. Please try again</h1>"
+
+
 @user.route('/reset', methods=['get', 'post'])
 def reset():
     if current_user.is_authenticated:
@@ -49,7 +76,7 @@ def reset():
         # -- HERE U CHANGE 'USER' WITH 'EMAIL' ON PASSWORD RESETTING
         user = User.query.filter_by(username=form.username.data).first_or_404()
         if user:
-            token = user.get_reset_token()
+            token = user.get_serializer_token(salt='Password Reset')
             # -- EMAIL SENDER HERE!!
             send_email(subject='Password Reset', to=user.email,
                        text_body='If your are getting this, it means you are unable to see HTML page. Please contact Admin.',
@@ -63,7 +90,7 @@ def reset_request(token):
     if current_user.is_authenticated:
         return 'You need to logout to access this page!'
     form = PasswordResetForm()
-    user = User.verify_reset_token(token)
+    user = User.verify_serializer_token(token, salt='Password Reset')
     if user:
         if form.validate_on_submit():
             user.set_password(form.password.data)
@@ -72,3 +99,4 @@ def reset_request(token):
         return render_template('password_reset.html', form=form)
     else:
         return redirect(url_for('user.reset'))
+    return "Password Reset Request"

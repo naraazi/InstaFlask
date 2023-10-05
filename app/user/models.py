@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), unique=True, nullable=False)
+    is_confirmed = db.Column(db.Boolean, default=False)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -23,13 +24,13 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-    def get_reset_token(self):
-        s = Serializer(current_app.secret_key, 'confirmation')
+    def get_serializer_token(self):
+        s = Serializer(current_app.secret_key, salt='default')
         return s.dumps({'user_id': self.id})
 
     @staticmethod
-    def verify_reset_token(self, token, max_age=600):
-        s = Serializer(current_app.secret_key, 'confirmation')
+    def verify_serializer_token(self, token, max_age=600):
+        s = Serializer(current_app.secret_key, salt='default')
         try:
             user_id = s.load(token, max_age=max_age) == self.id
         except:
