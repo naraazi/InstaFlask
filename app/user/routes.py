@@ -17,7 +17,7 @@ def signup():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        return "<h1>User Added</h1>"
+        return redirect(url_for('user.login'))
     return render_template('signup.html', form=form)
 
 
@@ -30,7 +30,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
-            return "User Logged In"
+            return redirect(url_for('main.home'))
     return render_template('login.html', form=form)
 
 
@@ -46,7 +46,6 @@ def confirm():
     if current_user.is_confirmed:
         return 'You are already confirmed'
     token = current_user.get_serializer_token()
-    # token = current_user.get_serializer_token(salt='Mail Confirmation') -- has no 'salt'
     # -- EMAIL SENDER HERE!!
     send_email(subject='E-mail Confirmation', to=current_user.email,
                text_body='If your are getting this, it means you are unable to see HTML page. Please contact Admin.',
@@ -95,7 +94,7 @@ def reset_request(token):
         if form.validate_on_submit():
             user.set_password(form.password.data)
             db.session.commit()
-            return 'User Logged In'
+            return redirect(url_for('user.login'))
         return render_template('password_reset.html', form=form)
     else:
         return redirect(url_for('user.reset'))

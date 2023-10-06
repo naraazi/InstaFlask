@@ -1,6 +1,7 @@
 from flask import Flask
 from app.extensions import db, migrate, login_manager, mail
 from app.user import user
+from app.main import main
 
 
 def create_app():
@@ -13,5 +14,6 @@ def create_app():
     mail.init_app(app)
 
     app.register_blueprint(user, url_prefix='/user')
+    app.register_blueprint(main)
 
     return app
