@@ -8,7 +8,7 @@
             <h1 class="title has-text-centered">Reset Password</h1>
             <p class="subtitle has-text-centered">An e-mail will be sent to user's address</p>
 
-            <form action="" method="post">
+            <form action="" method="POST">
                 {{form.hidden_tag()}}
                 {{render_form(form.username, class_="input", placeholder="Username")}}
                 {{render_form(form.submit, class_='my-3 button is-warning is-outlined is-fullwidth is-medium')}}

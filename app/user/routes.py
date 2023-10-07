@@ -7,7 +7,7 @@ from flask import render_template, redirect, url_for
 from flask_login import login_user, logout_user, current_user, login_required
 
 
-@user.route('/signup', methods=['get', 'post'])
+@user.route('/signup', methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
         return 'You need to logout to access this page!'
@@ -21,7 +21,7 @@ def signup():
     return render_template('signup.html', form=form)
 
 
-@user.route('/login', methods=['get', 'post'])
+@user.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return 'You need to logout to access this page!'
@@ -66,7 +66,7 @@ def confirmation(token):
     return "<h1>There has been some issue. Please try again</h1>"
 
 
-@user.route('/reset', methods=['get', 'post'])
+@user.route('/reset', methods=['GET', 'POST'])
 def reset():
     if current_user.is_authenticated:
         return 'You need to logout to access this page!'
@@ -84,7 +84,7 @@ def reset():
     return render_template('reset.html', form=form)
 
 
-@user.route('reset/<token>', methods=['get', 'post'])
+@user.route('reset/<token>', methods=['GET', 'POST'])
 def reset_request(token):
     if current_user.is_authenticated:
         return 'You need to logout to access this page!'
