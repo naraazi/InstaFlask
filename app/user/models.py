@@ -1,5 +1,5 @@
 from app.extensions import db, login_manager
-from app.post.models import Post
+from app.post.models import Post, likes
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from itsdangerous import TimedSerializer as Serializer
@@ -19,6 +19,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(200), unique=True, nullable=False)
     is_confirmed = db.Column(db.Boolean, default=False)
     posts = db.relationship('Post', backref='user', lazy='dynamic')
+    posts_liked = db.relationship('Post', secondary=likes, backref='user_liked', lazy='dynamic')
 
     def set_password(self, password):
         self.password = generate_password_hash(password)

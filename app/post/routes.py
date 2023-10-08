@@ -10,7 +10,7 @@ from app.helper.pics import save_picture
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
-@post.route('/new', methods=['get', 'post'])
+@post.route('/new', methods=['GET', 'POST'])
 @login_required
 def new():
     form = PostForm()
