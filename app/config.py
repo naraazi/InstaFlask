@@ -16,6 +16,7 @@ MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 MAIL_SUBJECT_PREFIX = 'InstaFlask: '
 MAIL_DEFAULT_SENDER = 'Team InstaFlask'
 
+DROPZONE_DEFAULT_MESSAGE = 'Drop or Click to upload! <br> (max 3 files)'
 DROPZONE_ALLOWED_FILE_TYPE = 'image'
 DROPZONE_MAX_FILE_SIZE = 5
 DROPZONE_MAX_FILES = 3
