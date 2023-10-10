@@ -4,12 +4,7 @@
 {%block style%}
 {{super()}}
 {{dropzone.load_css()}}
-{{dropzone.style('border: 2px dashed #515BD4;
-margin: 10px 0 10px;
-min-height: 200px;
-width: 500px;
-margin: auto;')
-}}
+{{dropzone.style('border: 2px dashed #515BD4; margin: 10px 0 10px; min-height: 200px; width: 500px; margin: auto;')}}
 {%endblock style%}
 
 {%block main%}
@@ -24,6 +19,7 @@ margin: auto;')
             </div>
 
             <div class="column">
+                {{render_form(form.images, id='images')}}
                 {{render_form(form.submit, class_='button is-success px-6')}}
             </div>
         </div>
@@ -34,5 +30,11 @@ margin: auto;')
 {%block script%}
 {{super()}}
 {{dropzone.load_js()}}
-{{dropzone.config()}}
+{{dropzone.config(custom_options="success: function(file, response) {add_images(response)}")}}
+<script>
+    const add_images = (response) => {
+        field = document.querySelector('#images')
+        field.value = response.images
+    }
+</script>
 {%endblock script%}
